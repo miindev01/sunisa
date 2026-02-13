@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose With Love 💗</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Sarabun',sans-serif;
+  background:linear-gradient(180deg,#ffe6ef,#ffffff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:16px;
+}
+
+/* card */
+.game{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:32px;
+  padding:26px 22px 32px;
+  box-shadow:0 25px 60px rgba(255,140,180,.35);
+  text-align:center;
+  animation:float 3.5s ease-in-out infinite;
+}
+
+h2{
+  margin:6px 0 10px;
+  font-weight:500;
+  color:#ff6fa5;
+}
+
+.question{
+  font-size:15px;
+  color:#555;
+  margin-bottom:22px;
+}
+
+/* choices */
+.choices{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.choice{
+  background:#fff5f9;
+  border-radius:20px;
+  padding:14px 10px 16px;
+  cursor:pointer;
+  transition:.3s;
+  box-shadow:0 10px 22px rgba(255,150,180,.25);
+}
+
+.choice:hover{
+  transform:translateY(-6px) scale(1.03);
+  background:#ffe3ee;
+}
+
+.choice img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border-radius:16px;
+  margin-bottom:8px;
+}
+
+.choice span{
+  font-size:13px;
+  color:#ff5f9e;
+}
+
+/* result */
+.result{
+  display:none;
+  animation:fade .5s ease;
+}
+
+.result p{
+  font-size:16px;
+  line-height:1.8;
+  color:#ff4f9a;
+  margin:18px 0 26px;
+  text-shadow:0 2px 6px rgba(255,200,220,.8);
+}
+
+.btn{
+  border:none;
+  padding:10px 30px;
+  border-radius:30px;
+  background:#ff8fb3;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 6px 15px rgba(255,140,180,.45);
+}
+
+.btn.back{
+  background:#ffe3ee;
+  color:#ff5f9e;
+  margin-left:8px;
+}
+
+/* animations */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+@keyframes fade{
+  from{opacity:0; transform:translateY(8px)}
+  to{opacity:1; transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="game" id="game">
+
+  <h2>ลองเลือกดูสิ 💗</h2>
+  <div class="question">
+    ถ้าเราได้ไปเที่ยวด้วยกัน  
+    เธอคิดว่าเราจะชอบแบบไหนมากที่สุด
+  </div>
+
+  <div class="choices">
+    <div class="choice" onclick="finish()">
+      <img src="images/choice1.png">
+      <span>ทะเล 🌊</span>
+    </div>
+    <div class="choice" onclick="finish()">
+      <img src="images/choice2.png">
+      <span>ภูเขา 🌿</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- result -->
+<div class="game result" id="result">
+  <h2>คำตอบของเรา 🤍</h2>
+  <p>
+    ไม่ว่าเธอจะเลือกอะไร  
+    สำหรับเรา…  
+    แค่ได้ไปกับเธอ  
+    ที่ไหนก็พิเศษเสมอ 💕
+  </p>
+
+  <button class="btn" onclick="location.href='memory.html'">
+    ดูความทรงจำ
+  </button>
+  <button class="btn back" onclick="history.back()">
+    กลับ
+  </button>
+</div>
+
+<script>
+function finish(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+}
+</script>
+
+</body>
+</html>

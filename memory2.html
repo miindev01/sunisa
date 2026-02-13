@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Puzzle</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Sarabun',sans-serif;
+  background:linear-gradient(135deg,#ffb6d5,#ffd6e8);
+  min-height:100vh;
+}
+
+/* ===== ปุ่มย้อนกลับ ===== */
+.back-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:30px;
+  background:#fff;
+  color:#000;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+  transition:.25s;
+  z-index:20;
+}
+.back-btn:hover{
+  transform:translateY(-2px);
+}
+
+/* ===== หัวข้อ ===== */
+h2{
+  text-align:center;
+  margin:80px 0 18px;
+  color:#fff;
+  font-weight:600;
+  text-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+/* ===== กล่องเกม ===== */
+.game{
+  background:#fff;
+  width:92%;
+  max-width:420px;
+  margin:0 auto 40px;
+  padding:18px;
+  border-radius:26px;
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+
+/* ===== กระดาน ===== */
+.board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.slot{
+  aspect-ratio:1/1;
+  border-radius:16px;
+  border:2px solid #ff8fb8;
+  background:#ffe6f1;
+  overflow:hidden;
+}
+
+/* ===== ชิ้น ===== */
+.piece{
+  width:100%;
+  height:100%;
+  background-image:url("images/love.png");
+  background-size:300% 300%;
+  cursor:grab;
+}
+
+/* ===== Overlay ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,182,213,.35);
+  backdrop-filter:blur(6px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:30;
+}
+
+/* ===== Popup ===== */
+.popup{
+  background:rgba(255,255,255,.95);
+  padding:32px 28px;
+  border-radius:30px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  animation:pop .45s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.8);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.popup h3{
+  color:#ff4d88;
+  margin-bottom:10px;
+}
+
+.popup p{
+  margin:0 0 18px;
+  color:#444;
+}
+
+/* ===== ปุ่มปิด ===== */
+.close-btn{
+  padding:10px 28px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#ff6fae,#ff9ecb);
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(255,105,180,.45);
+  transition:.25s;
+}
+.close-btn:hover{
+  transform:scale(1.05);
+}
+
+/* ===== หัวใจลอย ===== */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  animation:float 4s linear forwards;
+  pointer-events:none;
+}
+@keyframes float{
+  to{
+    transform:translateY(-110vh);
+    opacity:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<button class="back-btn" onclick="history.back()">ย้อนกลับ</button>
+<h2>ที่รักจะทำได้ไหมนะ </h2>
+
+<div class="game">
+  <div class="board" id="board"></div>
+</div>
+
+<!-- popup -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <h3>💖 ที่รักของเค้าเก่งที่สุด 💖</h3>
+    <p>ต่อรูปของเราได้สำเร็จแล้ว</p>
+    <button class="close-btn" onclick="closePopup()">ปิด</button>
+  </div>
+</div>
+
+<script>
+const board = document.getElementById("board");
+
+/* สร้างตำแหน่ง */
+let positions = [...Array(9).keys()];
+let shuffled = [...positions].sort(()=>Math.random()-0.5);
+
+/* สร้างกระดาน */
+shuffled.forEach((pos,index)=>{
+  const slot = document.createElement("div");
+  slot.className="slot";
+  slot.dataset.slot=index;
+
+  const piece = document.createElement("div");
+  piece.className="piece";
+  piece.draggable=true;
+  piece.dataset.piece=pos;
+
+  const x=(pos%3)*50;
+  const y=Math.floor(pos/3)*50;
+  piece.style.backgroundPosition=`${x}% ${y}%`;
+
+  slot.appendChild(piece);
+  board.appendChild(slot);
+
+  piece.addEventListener("dragstart",e=>{
+    e.dataTransfer.setData("text",piece.dataset.piece);
+  });
+});
+
+/* ลากสลับ */
+board.querySelectorAll(".slot").forEach(slot=>{
+  slot.addEventListener("dragover",e=>e.preventDefault());
+  slot.addEventListener("drop",e=>{
+    e.preventDefault();
+    const num=e.dataTransfer.getData("text");
+    const from=document.querySelector(`[data-piece="${num}"]`);
+    const to=slot.querySelector(".piece");
+
+    if(from && to && from!==to){
+      const fromSlot=from.parentElement;
+      fromSlot.appendChild(to);
+      slot.appendChild(from);
+      checkWin();
+    }
+  });
+});
+
+/* ตรวจสอบ */
+function checkWin(){
+  const slots=document.querySelectorAll(".slot");
+  let ok=true;
+
+  slots.forEach((s,i)=>{
+    if(parseInt(s.querySelector(".piece").dataset.piece)!==i) ok=false;
+  });
+
+  if(ok){
+    document.getElementById("overlay").style.display="flex";
+    for(let i=0;i<18;i++) heart();
+  }
+}
+
+/* หัวใจ */
+function heart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=16+Math.random()*22+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+}
+
+function closePopup(){
+  document.getElementById("overlay").style.display="none";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>พี่รักหนูมากแค่ไหน</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background: linear-gradient(135deg,#ffd1dc,#ffe4e6);
+  font-family:sans-serif;
+  overflow:hidden;
+}
+
+h1{
+  color:#e11d48;
+  margin-bottom:20px;
+}
+
+/* รูปหัวใจ */
+.love-img{
+  width:260px; /* ใหญ่ขึ้น */
+  cursor:pointer;
+  transition: transform .2s ease;
+}
+
+/* หัวใจเต้น (ช้าลง) */
+.beat{
+  animation: beat .8s infinite;
+}
+
+@keyframes beat{
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.08); }
+  50%  { transform: scale(0.97); }
+  70%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.percent{
+  margin-top:20px;
+  font-size:22px;
+  color:#e11d48;
+}
+
+/* Popup */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+
+.popup.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.popup-box{
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  position:relative;
+  animation: pop .3s ease;
+}
+
+@keyframes pop{
+  from{ transform:scale(.8); opacity:0;}
+  to{ transform:scale(1); opacity:1;}
+}
+
+.popup-box img{
+  width:120px;
+  margin-bottom:10px;
+}
+
+.popup-box h2{
+  color:#e11d48;
+}
+
+.btns{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+}
+
+button{
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.close-btn{ background:#e11d48; color:#fff; }
+.back-btn{ background:#fda4af; }
+
+/* หัวใจลอย */
+.floating-heart{
+  position:fixed;
+  bottom:-50px;
+  width:30px;
+  opacity:.7;
+  animation: floatUp 4s linear forwards;
+}
+
+/* ===== ปุ่มย้อนกลับ ===== */
+.back-btn {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  padding: 10px 20px;
+  border-radius: 40px;
+  border: none;
+  background: linear-gradient(135deg,#fff,#ffe0ee);
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255,105,180,.4);
+  transition: .3s;
+  z-index: 50;
+}
+
+.back-btn:hover {
+  transform: translateY(-3px);
+}
+
+@keyframes floatUp{
+  to{
+    transform:translateY(-110vh) scale(1.4);
+    opacity:0;
+  }
+}
+</style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="location.href='love.html'">ย้อนกลับ</button>
+
+<h1>พี่รักหนูมากแค่ไหน </h1>
+
+
+<img src="love/heart.png" class="love-img" id="loveImg">
+
+<div class="percent" id="percent">0%</div>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <img src="love/heart.png">
+    <h2>หนูก็รักพี่เหมือนกัน </h2>
+
+    <div class="btns">
+      <button class="close-btn" onclick="closePopup()">ปิด</button>
+      <button class="back-btn" onclick="goBack()">ย้อนกลับ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let percent = 0;
+let timer = null;
+
+const img = document.getElementById("loveImg");
+const percentText = document.getElementById("percent");
+const popup = document.getElementById("popup");
+
+function startLove(){
+  if(timer) return;
+  img.classList.add("beat");
+
+  timer = setInterval(()=>{
+    if(percent < 100){
+      percent++;
+      percentText.textContent = percent + "%";
+    } else {
+      clearInterval(timer);
+      img.classList.remove("beat");
+      showPopup();
+      startFloatingHearts();
+    }
+  }, 40);
+}
+
+function stopLove(){
+  img.classList.remove("beat");
+  clearInterval(timer);
+  timer = null;
+}
+
+img.addEventListener("mousedown", startLove);
+img.addEventListener("mouseup", stopLove);
+img.addEventListener("mouseleave", stopLove);
+img.addEventListener("touchstart", startLove);
+img.addEventListener("touchend", stopLove);
+
+/* Popup */
+function showPopup(){
+  popup.classList.add("active");
+}
+
+function closePopup(){
+  popup.classList.remove("active");
+}
+
+function goBack(){
+  popup.classList.remove("active");
+  percent = 0;
+  percentText.textContent = "0%";
+}
+
+/* หัวใจลอย */
+function startFloatingHearts(){
+  setInterval(()=>{
+    const heart = document.createElement("img");
+    heart.src = "love/heart.png";
+    heart.className = "floating-heart";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.width = (20 + Math.random()*20) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),4000);
+  },300);
+}
+</script>
+
+</body>
+</html>

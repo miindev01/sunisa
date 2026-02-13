@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>foryoubaby</title>
+
+<style>
+body{
+  margin:0;
+  font-family: 'Sarabun', sans-serif;
+  background:#ffdce8;
+  display:flex;
+  justify-content:center;
+  padding:30px 12px;
+}
+
+.paper{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:32px;
+  padding:24px 20px;
+  box-shadow:0 25px 60px rgba(255,120,160,.35);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+
+/* ===== title ===== */
+.paper h2{
+  margin:4px 0 14px;
+  color:#ff6fa5;
+  font-weight:500;
+  font-size:18px;
+}
+
+/* ===== กรอบรูป (ขนาดตายตัว) ===== */
+.album{
+  width:100%;
+  max-width:340px;
+  height:450px;            /* ⭐ คุมความสูง */
+  background:linear-gradient(180deg,#ffeaf2,#ffd1e1);
+  border-radius:22px;
+  position:relative;
+  overflow:hidden;         /* ⭐ กันล้น */
+}
+
+/* slider */
+.track{
+  display:flex;
+  height:100%;
+  transition:.4s ease;
+}
+
+.photo{
+  min-width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;   /* ⭐ เต็มกรอบ */
+  border-radius:18px; /* ให้โค้งสวยตามกรอบ */
+}
+
+/* ปุ่มลูกศร */
+.nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:32px;
+  height:32px;
+  border:none;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 5px 12px rgba(0,0,0,.15);
+  cursor:pointer;
+}
+.prev{ left:10px; }
+.next{ right:10px; }
+
+/* ===== ปุ่ม ===== */
+.buttons{
+  margin-top:18px;
+  display:flex;
+  gap:12px;
+}
+
+.btn{
+  border:none;
+  padding:8px 18px;
+  border-radius:22px;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.btn-main{
+  background:#ff8fb3;
+  color:#fff;
+  box-shadow:0 6px 15px rgba(255,120,160,.4);
+}
+
+.btn-back{
+  background:#ffe0ec;
+  color:#ff5f9e;
+}
+
+/* ===== 12 เดือน (ขยายทีหลัง) ===== */
+.months{
+  display:none;
+  margin-top:20px;
+  width:100%;
+  animation:fade .4s ease;
+}
+
+.months h3{
+  text-align:center;
+  font-size:15px;
+  color:#ff6fa5;
+  margin-bottom:12px;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.grid img{
+  width: 100%;
+  aspect-ratio: 4 / 10;   /* 👈 แนวตั้ง */
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(255,120,160,.25);
+}
+
+
+.item{
+  text-align:center;
+  font-size:12px;
+  color:#ff5f9e;
+}
+
+.item img{
+  width:100%;
+  aspect-ratio: 3 / 4;   /* 👈 แนวตั้งจริง */
+  object-fit: cover;
+  border-radius:18px;
+  margin-bottom:6px;
+  box-shadow: 0 10px 25px rgba(255,120,160,.25);
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(-8px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+  .photo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr); /* คอม = 3x2 */
+  gap:14px;
+}
+
+/* มือถือ */
+@media(max-width:768px){
+  .photo-grid{
+    grid-template-columns:repeat(2,1fr); /* มือถือ = 2x3 */
+  }
+}
+
+/* กล่องรูป */
+.photo-item{
+  position:relative;
+  width:100%;
+  aspect-ratio: 3 / 4;   /* ⭐ แนวตั้ง */
+  overflow:hidden;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(255,120,160,.25);
+}
+
+/* รูป */
+.photo-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;      /* ไม่ยืด ไม่เบี้ยว */
+  display:block;
+}
+
+/* overlay */
+.photo-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(255,105,180,.55),
+    rgba(255,105,180,.15),
+    transparent
+  );
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:14px;
+  color:#fff;
+  font-size:14px;
+  text-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="paper">
+
+  <h2>Memories Me & You </h2>
+
+  <!-- อัลบั้ม -->
+  <div class="album">
+    <div class="track" id="track">
+      <div class="photo"><img src="images/1.png"></div>
+      <div class="photo"><img src="images/2.png"></div>
+      <div class="photo"><img src="images/3.png"></div>
+      <div class="photo"><img src="images/4.png"></div>
+      <div class="photo"><img src="images/5.png"></div>
+      <div class="photo"><img src="images/6.png"></div>
+    </div>
+
+    <button class="nav prev" onclick="slide(-1)">‹</button>
+    <button class="nav next" onclick="slide(1)">›</button>
+  </div>
+
+  <!-- ปุ่ม -->
+  <div class="buttons">
+   
+    <button class="btn btn-back" onclick="history.back()">back</button>
+  </div>
+
+  
+
+
+
+<script>
+let index=0;
+function slide(n){
+  index=Math.max(0,Math.min(5,index+n));
+  document.getElementById("track")
+    .style.transform=`translateX(-${index*100}%)`;
+}
+function toggleMonths(){
+  const m=document.getElementById("months");
+  m.style.display=m.style.display==="block"?"none":"block";
+  m.scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+
+</body>
+</html>
+
+
+

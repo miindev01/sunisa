@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>foryoubaby</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Sarabun',sans-serif;
+  background:linear-gradient(180deg,#ffe6ef,#ffffff);
+}
+
+/* overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,182,193,.45);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:16px;
+}
+
+/* modal */
+.modal{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:30px;
+  padding:26px 22px 32px;
+  text-align:center;
+  box-shadow:0 20px 55px rgba(255,150,180,.35);
+  animation:float 3s ease-in-out infinite;
+}
+
+/* image */
+.card-image{
+  width:68%;
+  max-width:240px;
+  margin:0 auto 18px;
+}
+
+.card-image img{
+  width:100%;
+  border-radius:18px;
+}
+
+/* text */
+.title{
+  font-size:18px;
+  color:#ff6fa5;
+  margin-bottom:6px;
+}
+
+.subtitle{
+  font-size:14px;
+  color:#777;
+  margin-bottom:22px;
+}
+
+/* ==== code box ==== */
+.code-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-bottom:22px;
+}
+.code-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto 26px;
+}
+
+.code-box input {
+  flex: 1;
+  max-width: 40px;
+  min-width: 32px;
+  height: 48px;
+
+  border-radius: 12px;
+  border: 2px solid #ffd1e1;
+  text-align: center;
+  font-size: 18px;
+  outline: none;
+  transition: 0.3s;
+}
+
+
+.code-box input:focus{
+  border-color:#ff6fa5;
+}
+
+/* button */
+button{
+  background:#ff8fb3;
+  border:none;
+  border-radius:50px;
+  padding:12px 36px;
+  font-size:15px;
+  color:#fff;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  background:#ff6fa5;
+  transform:scale(1.05);
+}
+
+.error{
+  margin-top:14px;
+  font-size:13px;
+  color:#ff4d6d;
+  display:none;
+}
+
+/* animation */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+  <div class="modal">
+
+    <div class="card-image">
+      <img src="images/unlock.png">
+    </div>
+
+    <div class="title">ใส่รหัสลับ</div>
+    <div class="subtitle">วันครบรอบของเราคือวันไหน</div>
+
+    <div class="code-wrapper">
+      <div class="code-box">
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+        <input 
+  type="password"
+  maxlength="1"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="one-time-code">
+
+     
+
+      </div>
+    </div>
+
+    <button onclick="checkCode()">ปลดล็อก</button>
+
+    <div class="error" id="error">
+      รหัสไม่ถูกต้อง ที่รักลืมได้ยังไง
+    </div>
+
+  </div>
+</div>
+
+<!-- sounds -->
+<audio id="tap" src="sounds/tap.mp3"></audio>
+<audio id="success" src="sounds/unlock.mp3"></audio>
+<audio id="fail" src="sounds/error.mp3"></audio>
+
+<script>
+const inputs = document.querySelectorAll('.code-box input');
+const tap = document.getElementById("tap");
+const success = document.getElementById("success");
+const fail = document.getElementById("fail");
+
+inputs.forEach((input, i) => {
+  input.addEventListener('input', () => {
+    tap.currentTime = 0;
+    tap.play();
+    if(input.value && i < inputs.length - 1){
+      inputs[i+1].focus();
+    }
+  });
+});
+
+function checkCode(){
+  let code = '';
+  inputs.forEach(i => code += i.value);
+
+  if(code === '120169'){
+    success.play();
+    setTimeout(()=>location.href='love.html',600);
+  }else{
+    fail.play();
+    document.getElementById('error').style.display='block';
+    inputs.forEach(i=>i.value='');
+    inputs[0].focus();
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

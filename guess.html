@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>foryoubaby</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Sarabun', sans-serif;
+  background:linear-gradient(180deg,#ffd6e6,#fff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+/* ===== ปุ่มย้อนกลับ (หน้าแรก) ===== */
+.page-back{
+  position:fixed;
+  top:18px;
+  left:18px;
+  padding:10px 18px;
+  border:none;
+  border-radius:30px;
+  background:#fff;
+  color:#ff4f9a;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(255,150,180,.4);
+  transition:.25s;
+  z-index:20;
+}
+.page-back:hover{
+  transform:translateY(-2px);
+}
+
+/* ===== หัวใจลอย ===== */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  color:rgba(255,105,180,.35);
+  font-size:20px;
+  animation:floatUp linear infinite;
+  pointer-events:none;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:0;}
+  10%{opacity:1;}
+  to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* ===== การ์ด ===== */
+.card-wrap{text-align:center;z-index:2;}
+
+.card{
+  width:260px;
+  height:360px;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 30px 70px rgba(255,120,160,.55);
+  cursor:pointer;
+  animation:float 3s ease-in-out infinite;
+  transition:.6s;
+}
+.card:hover{transform:translateY(-16px) scale(1.05);}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.card-text{
+  margin-top:18px;
+  color:#ff5f9e;
+  font-size:14px;
+  animation:blink 1.8s infinite;
+}
+
+/* ===== overlay ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,190,210,.65);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  animation:fade .4s ease;
+  z-index:50;
+}
+
+/* ===== modal ===== */
+.modal{
+  position:relative;
+  background:#fff;
+  max-width:420px;
+  width:100%;
+  max-height:80vh;
+  border-radius:40px;
+  box-shadow:0 35px 80px rgba(255,120,160,.55);
+  animation:pop .6s cubic-bezier(.2,1.4,.4,1);
+}
+
+/* ปุ่มปิด */
+.close-btn{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:none;
+  background:#ffe0ed;
+  color:#ff4f9a;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(255,150,180,.45);
+}
+
+/* content */
+.content{
+  padding:70px 26px 26px;
+  text-align:center;
+  overflow-y:auto;
+}
+
+#text{
+  font-family:'Playfair Display', serif;
+  font-size:16px;
+  line-height:1.9;
+  color:#ff4f9a;
+  white-space:pre-wrap;
+  animation:glow 2s infinite alternate;
+}
+
+/* ปุ่ม */
+.btn{
+  margin-top:26px;
+  border:none;
+  padding:12px 36px;
+  border-radius:40px;
+  background:linear-gradient(135deg,#ffd1e3,#ff9ec7);
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(255,150,180,.55);
+  transition:.3s;
+}
+.btn:hover{transform:scale(1.1);}
+
+/* animations */
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+@keyframes fade{from{opacity:0;}to{opacity:1;}}
+@keyframes pop{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes blink{0%,100%{opacity:.6;}50%{opacity:1;}}
+@keyframes glow{from{text-shadow:0 0 6px rgba(255,150,180,.6);}to{text-shadow:0 0 14px rgba(255,120,160,1);}}
+</style>
+</head>
+
+<body>
+
+<!-- ปุ่มย้อนกลับหน้า -->
+<button class="page-back" onclick="location.href='love.html'">ย้อนกลับ</button>
+
+<div class="card-wrap">
+  <div class="card" onclick="openCard()">
+    <img src="images/memory2.png">
+  </div>
+  <div class="card-text">แตะการ์ดเพื่อเปิด 💗</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close-btn" onclick="closeCard()">×</button>
+
+    <div class="content">
+      <div id="text"></div>
+      <button class="btn" onclick="closeCard()">ปิดข้อความ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const message=`ถึงพี่จะทำงานหนัก ไม่ค่อยว่างไม่เป็นไรแต่อย่าลืมว่ามีหนูอยู่ข้างๆ คอยเป็นกำลังใจให้เสมอนะ สู้ๆนะคะ อย่าลืมรักษาสุขภาพ จะได้พาหนูไปเที่ยวอีกหลายๆที่ หนูรักพี่มากนะคะ สุขสันต์วันวาเลนไทน์ค่ะที่รักของหนู`;
+
+let i=0;
+
+function openCard(){
+  overlay.style.display="flex";
+  text.innerHTML="";
+  i=0;
+  typeText();
+}
+function closeCard(){overlay.style.display="none";}
+function typeText(){
+  if(i<message.length){
+    text.innerHTML+=message.charAt(i++);
+    setTimeout(typeText,45);
+  }
+}
+
+/* หัวใจ */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=Math.random()*18+14+"px";
+  h.style.animationDuration=Math.random()*4+6+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),8000);
+},700);
+</script>
+
+</body>
+</html>
