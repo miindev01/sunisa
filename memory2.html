@@ -13,7 +13,7 @@ body{
   min-height:100vh;
 }
 
-/* ===== ปุ่มย้อนกลับ ===== */
+/* ปุ่มย้อนกลับ */
 .back-btn{
   position:fixed;
   top:15px;
@@ -22,27 +22,19 @@ body{
   border:none;
   border-radius:30px;
   background:#fff;
-  color:#000;
   font-size:14px;
   cursor:pointer;
   box-shadow:0 6px 18px rgba(0,0,0,.15);
-  transition:.25s;
-  z-index:20;
-}
-.back-btn:hover{
-  transform:translateY(-2px);
 }
 
-/* ===== หัวข้อ ===== */
+/* หัวข้อ */
 h2{
   text-align:center;
   margin:80px 0 18px;
   color:#fff;
-  font-weight:600;
-  text-shadow:0 2px 6px rgba(0,0,0,.25);
 }
 
-/* ===== กล่องเกม ===== */
+/* กล่องเกม */
 .game{
   background:#fff;
   width:92%;
@@ -53,7 +45,7 @@ h2{
   box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
-/* ===== กระดาน ===== */
+/* กระดาน */
 .board{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -66,18 +58,24 @@ h2{
   border:2px solid #ff8fb8;
   background:#ffe6f1;
   overflow:hidden;
+  position:relative;
 }
 
-/* ===== ชิ้น ===== */
+/* ชิ้น */
 .piece{
   width:100%;
   height:100%;
   background-image:url("images/love.png");
   background-size:300% 300%;
-  cursor:grab;
 }
 
-/* ===== Overlay ===== */
+/* เอฟเฟกต์เลือก */
+.selected{
+  outline:4px solid #ff4d88;
+  transform:scale(1.05);
+}
+
+/* Popup */
 .overlay{
   position:fixed;
   inset:0;
@@ -86,56 +84,29 @@ h2{
   display:none;
   justify-content:center;
   align-items:center;
-  z-index:30;
 }
 
-/* ===== Popup ===== */
 .popup{
-  background:rgba(255,255,255,.95);
-  padding:32px 28px;
-  border-radius:30px;
+  background:#fff;
+  padding:30px;
+  border-radius:24px;
   text-align:center;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
-  animation:pop .45s ease;
 }
 
-@keyframes pop{
-  from{transform:scale(.8);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
-
-.popup h3{
-  color:#ff4d88;
-  margin-bottom:10px;
-}
-
-.popup p{
-  margin:0 0 18px;
-  color:#444;
-}
-
-/* ===== ปุ่มปิด ===== */
 .close-btn{
-  padding:10px 28px;
+  padding:10px 26px;
   border:none;
   border-radius:30px;
-  background:linear-gradient(135deg,#ff6fae,#ff9ecb);
+  background:#ff6fae;
   color:#fff;
-  font-size:15px;
   cursor:pointer;
-  box-shadow:0 6px 18px rgba(255,105,180,.45);
-  transition:.25s;
-}
-.close-btn:hover{
-  transform:scale(1.05);
 }
 
-/* ===== หัวใจลอย ===== */
+/* หัวใจลอย */
 .heart{
   position:fixed;
   bottom:-20px;
   animation:float 4s linear forwards;
-  pointer-events:none;
 }
 @keyframes float{
   to{
@@ -149,23 +120,23 @@ h2{
 <body>
 
 <button class="back-btn" onclick="history.back()">ย้อนกลับ</button>
-<h2>ที่รักจะทำได้ไหมนะ </h2>
+<h2>ที่รักจะทำได้ไหมนะ 💖</h2>
 
 <div class="game">
   <div class="board" id="board"></div>
 </div>
 
-<!-- popup -->
 <div class="overlay" id="overlay">
   <div class="popup">
-    <h3>💖 ที่รักของเค้าเก่งที่สุด 💖</h3>
-    <p>ต่อรูปของเราได้สำเร็จแล้ว</p>
+    <h3>💖 เก่งที่สุดเลย 💖</h3>
+    <p>ต่อรูปสำเร็จแล้ว</p>
     <button class="close-btn" onclick="closePopup()">ปิด</button>
   </div>
 </div>
 
 <script>
 const board = document.getElementById("board");
+let selectedPiece = null;
 
 /* สร้างตำแหน่ง */
 let positions = [...Array(9).keys()];
@@ -179,7 +150,6 @@ shuffled.forEach((pos,index)=>{
 
   const piece = document.createElement("div");
   piece.className="piece";
-  piece.draggable=true;
   piece.dataset.piece=pos;
 
   const x=(pos%3)*50;
@@ -189,28 +159,30 @@ shuffled.forEach((pos,index)=>{
   slot.appendChild(piece);
   board.appendChild(slot);
 
-  piece.addEventListener("dragstart",e=>{
-    e.dataTransfer.setData("text",piece.dataset.piece);
-  });
+  /* รองรับมือถือ + คอม */
+  piece.addEventListener("click",()=>selectPiece(piece));
 });
 
-/* ลากสลับ */
-board.querySelectorAll(".slot").forEach(slot=>{
-  slot.addEventListener("dragover",e=>e.preventDefault());
-  slot.addEventListener("drop",e=>{
-    e.preventDefault();
-    const num=e.dataTransfer.getData("text");
-    const from=document.querySelector(`[data-piece="${num}"]`);
-    const to=slot.querySelector(".piece");
+/* เลือกชิ้น */
+function selectPiece(piece){
+  if(!selectedPiece){
+    selectedPiece = piece;
+    piece.classList.add("selected");
+  }else{
+    swapPieces(selectedPiece, piece);
+    selectedPiece.classList.remove("selected");
+    selectedPiece = null;
+    checkWin();
+  }
+}
 
-    if(from && to && from!==to){
-      const fromSlot=from.parentElement;
-      fromSlot.appendChild(to);
-      slot.appendChild(from);
-      checkWin();
-    }
-  });
-});
+/* สลับ */
+function swapPieces(p1,p2){
+  const parent1 = p1.parentElement;
+  const parent2 = p2.parentElement;
+  parent1.appendChild(p2);
+  parent2.appendChild(p1);
+}
 
 /* ตรวจสอบ */
 function checkWin(){
@@ -227,7 +199,7 @@ function checkWin(){
   }
 }
 
-/* หัวใจ */
+/* หัวใจลอย */
 function heart(){
   const h=document.createElement("div");
   h.className="heart";
